@@ -21,9 +21,10 @@ const Login = () => {
     try {
         // Attempt login
         const res = await api.login({ username, password });
+        console.log("Login API Response:", res);
         
-        // Strict check: code === 1 means success
-        if (res.code === 1) {
+        // Strict check: code == 1 means success (using loose equality for safety)
+        if (res.code == 1) {
             // Fix: res.data is the JWT token string directly
             const token = res.data;
             
@@ -48,6 +49,7 @@ const Login = () => {
             localStorage.setItem('user', JSON.stringify(userObj));
             navigate('/');
         } else {
+            console.error("Login failed logic:", res);
             // Display error message from backend, or fallback
             setError(res.msg || t('signInFail'));
         }

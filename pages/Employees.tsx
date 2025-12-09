@@ -26,7 +26,7 @@ const Employees = () => {
                 username: search || undefined
             });
             
-            if (res.code === 1) {
+            if (res.code == 1) {
                 // Handle structure if data.data is array or wrapped
                 if(res.data && Array.isArray(res.data)) {
                      setWorkers(res.data);
@@ -59,7 +59,7 @@ const Employees = () => {
         if(confirm(t('deleteConfirm'))) {
             try {
                 const res = await api.deleteWorkers([id]);
-                if (res.code === 1) {
+                if (res.code == 1) {
                     fetchWorkers();
                 } else {
                     alert(res.msg || 'Failed to delete');

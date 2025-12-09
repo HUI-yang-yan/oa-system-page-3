@@ -25,7 +25,7 @@ const Leave = () => {
                 reason: formData.reason
             });
             
-            if (res.code === 1) {
+            if (res.code == 1) {
                 alert(t('leaveSubmitted'));
                 setFormData({ type: '1', startTime: '', endTime: '', reason: '' });
             } else {

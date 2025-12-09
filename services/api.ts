@@ -19,7 +19,9 @@ const handleResponse = async <T>(response: Response): Promise<Result<T>> => {
     }
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  return response.json();
+  const data = await response.json();
+  // console.log("API Response:", data); // Uncomment for verbose global logging
+  return data;
 };
 
 export const api = {

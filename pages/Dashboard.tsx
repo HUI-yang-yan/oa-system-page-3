@@ -39,7 +39,7 @@ const Dashboard = () => {
         setLoading(true);
         try {
             const res = await api.signIn();
-            if (res.code === 1) {
+            if (res.code == 1) {
                 setMsg({ type: 'success', text: `${t('signInSuccess')} ${new Date().toLocaleTimeString()}` });
             } else {
                 setMsg({ type: 'error', text: res.msg || t('signInFail') });
@@ -55,7 +55,7 @@ const Dashboard = () => {
         setLoading(true);
         try {
             const res = await api.signOut();
-            if (res.code === 1) {
+            if (res.code == 1) {
                 setMsg({ type: 'success', text: `${t('signOutSuccess')} ${new Date().toLocaleTimeString()}` });
             } else {
                  setMsg({ type: 'error', text: res.msg || t('signOutFail') });
