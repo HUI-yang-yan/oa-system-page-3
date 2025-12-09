@@ -21,19 +21,39 @@ const Login = () => {
     try {
         // Attempt login
         const res = await api.login({ username, password });
+        
+        // Strict check: code === 1 means success
         if (res.code === 1) {
-            localStorage.setItem('token', 'Bearer mock-token-12345'); // In real app, res.data.token
-            localStorage.setItem('user', JSON.stringify(res.data || { username, realName: 'Admin User' }));
+            // Fix: res.data is the JWT token string directly
+            const token = res.data;
+            
+            // Ensure token has Bearer prefix if the backend requires it (standard practice)
+            // The provided token example is a raw JWT, so we prepend Bearer
+            const finalToken = (typeof token === 'string' && !token.startsWith('Bearer ')) 
+                ? `Bearer ${token}` 
+                : (token as string);
+
+            localStorage.setItem('token', finalToken);
+
+            // Since the API only returns a token string (no user details),
+            // we construct a user object from the input username so the UI has something to display.
+            // In a complete implementation, you might fetch /api/user/{id} here using the token.
+            const userObj = { 
+                username: username, 
+                realName: username, // Fallback since we don't have real name yet
+                position: 'Employee',
+                status: 1
+            };
+            
+            localStorage.setItem('user', JSON.stringify(userObj));
             navigate('/');
         } else {
-            setError(res.msg || 'Login failed');
+            // Display error message from backend, or fallback
+            setError(res.msg || t('signInFail'));
         }
     } catch (err) {
-        // For demonstration when API is not running, allow fallback entry
-        console.warn("API Error, using fallback login for demo");
-        localStorage.setItem('token', 'Bearer demo-token');
-        localStorage.setItem('user', JSON.stringify({ username, realName: 'Demo User' }));
-        navigate('/');
+        console.error("Login exception:", err);
+        setError(t('signInFail'));
     } finally {
         setLoading(false);
     }
@@ -49,7 +69,7 @@ const Login = () => {
              </div>
           </div>
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">{t('welcomeBack')}</h2>
-          <p className="text-center text-gray-500 mb-8">{t('signInToAccount')}</p>
+          <p className="text-center text-gray-500 mb-8">{t('signInToAccount')} (Admin/123456)</p>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <Input
