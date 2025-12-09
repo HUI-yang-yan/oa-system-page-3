@@ -25,17 +25,22 @@ const Employees = () => {
                 pageSize: 10,
                 username: search || undefined
             });
-            // Handle structure if data.data is array or wrapped
-            if(res.data && Array.isArray(res.data)) {
-                 setWorkers(res.data);
-            } else if (res.data && (res.data as any).records) {
-                 setWorkers((res.data as any).records);
+            
+            if (res.code === 1) {
+                // Handle structure if data.data is array or wrapped
+                if(res.data && Array.isArray(res.data)) {
+                     setWorkers(res.data);
+                } else if (res.data && (res.data as any).records) {
+                     setWorkers((res.data as any).records);
+                } else {
+                    setWorkers([]);
+                }
             } else {
-                // Fallback mock data if API fails or returns empty (for demo purposes)
-                setWorkers([
+                console.error("API returned error: ", res.msg);
+                // Fallback mock data if API logical failure
+                 setWorkers([
                     { id: 1, realName: 'Alice Johnson', username: 'alice', position: 'Developer', departmentId: 101, status: 1, email: 'alice@oa.com' },
                     { id: 2, realName: 'Bob Smith', username: 'bob', position: 'Manager', departmentId: 102, status: 1, email: 'bob@oa.com' },
-                    { id: 3, realName: 'Charlie Brown', username: 'charlie', position: 'Analyst', departmentId: 101, status: 0, email: 'charlie@oa.com' },
                 ]);
             }
         } catch (e) {
@@ -53,8 +58,12 @@ const Employees = () => {
     const handleDelete = async (id: number) => {
         if(confirm(t('deleteConfirm'))) {
             try {
-                await api.deleteWorkers([id]);
-                fetchWorkers();
+                const res = await api.deleteWorkers([id]);
+                if (res.code === 1) {
+                    fetchWorkers();
+                } else {
+                    alert(res.msg || 'Failed to delete');
+                }
             } catch (e) {
                 alert('Failed to delete');
             }

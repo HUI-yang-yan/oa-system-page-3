@@ -21,7 +21,7 @@ const Login = () => {
     try {
         // Attempt login
         const res = await api.login({ username, password });
-        if (res.code === 200 || res.code === 0) { // Assuming 0 or 200 is success
+        if (res.code === 1) {
             localStorage.setItem('token', 'Bearer mock-token-12345'); // In real app, res.data.token
             localStorage.setItem('user', JSON.stringify(res.data || { username, realName: 'Admin User' }));
             navigate('/');

@@ -18,14 +18,19 @@ const Leave = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            await api.addLeave({
+            const res = await api.addLeave({
                 leaveTypeId: parseInt(formData.type),
                 startTime: formData.startTime,
                 endTime: formData.endTime,
                 reason: formData.reason
             });
-            alert(t('leaveSubmitted'));
-            setFormData({ type: '1', startTime: '', endTime: '', reason: '' });
+            
+            if (res.code === 1) {
+                alert(t('leaveSubmitted'));
+                setFormData({ type: '1', startTime: '', endTime: '', reason: '' });
+            } else {
+                alert(res.msg || t('leaveFailed'));
+            }
         } catch (error) {
             alert(t('leaveFailed'));
         } finally {

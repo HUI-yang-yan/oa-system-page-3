@@ -38,8 +38,12 @@ const Dashboard = () => {
     const handleSignIn = async () => {
         setLoading(true);
         try {
-            await api.signIn();
-            setMsg({ type: 'success', text: `${t('signInSuccess')} ${new Date().toLocaleTimeString()}` });
+            const res = await api.signIn();
+            if (res.code === 1) {
+                setMsg({ type: 'success', text: `${t('signInSuccess')} ${new Date().toLocaleTimeString()}` });
+            } else {
+                setMsg({ type: 'error', text: res.msg || t('signInFail') });
+            }
         } catch (error) {
             setMsg({ type: 'error', text: t('signInFail') });
         } finally {
@@ -50,8 +54,12 @@ const Dashboard = () => {
     const handleSignOut = async () => {
         setLoading(true);
         try {
-            await api.signOut();
-            setMsg({ type: 'success', text: `${t('signOutSuccess')} ${new Date().toLocaleTimeString()}` });
+            const res = await api.signOut();
+            if (res.code === 1) {
+                setMsg({ type: 'success', text: `${t('signOutSuccess')} ${new Date().toLocaleTimeString()}` });
+            } else {
+                 setMsg({ type: 'error', text: res.msg || t('signOutFail') });
+            }
         } catch (error) {
              setMsg({ type: 'error', text: t('signOutFail') });
         } finally {
